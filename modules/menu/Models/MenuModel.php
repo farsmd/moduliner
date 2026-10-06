@@ -82,13 +82,12 @@ class MenuModel extends Model
 
     /**
      * آیتم‌های منو برای نقش کاربر — خروجی سازگار با سایدبار ادمین
-     * اگر جدول خالی باشد، اول از menu.php ماژول‌ها ایمپورت می‌کند
+     * در هر فراخوانی، آیتم‌های جدید menu.php ماژول‌ها خودکار اضافه می‌شوند
+     * (فقط موارد جدید؛ تغییرات دستی دست‌نخورده می‌ماند)
      */
     public function forRole(string $role): array
     {
-        if ($this->count() === 0) {
-            $this->syncFromModules();
-        }
+        $this->syncFromModules();
         $items = [];
         foreach ($this->all() as $row) {
             if (!(bool) $row['is_active']) { continue; }
@@ -126,8 +125,9 @@ class MenuModel extends Model
                     [':m' => $module, ':u' => (string) $e['url']]
                 );
                 if ($exists !== null) { continue; }
+                // INSERT OR IGNORE: امن در برابر race-condition (درخواست‌های هم‌زمان)
                 $this->query(
-                    'INSERT INTO menu_items (module, title, url, icon, roles, position) VALUES (:m, :t, :u, :i, :r, :p)',
+                    'INSERT OR IGNORE INTO menu_items (module, title, url, icon, roles, position) VALUES (:m, :t, :u, :i, :r, :p)',
                     [
                         ':m' => $module,
                         ':t' => (string) $e['title'],
