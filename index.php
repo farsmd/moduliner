@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-define('MODULINER_VERSION', '0.0.3');
+define('MODULINER_VERSION', '0.0.4');
 define('BASE_PATH', __DIR__);
 define('CORE_PATH', BASE_PATH . '/core');
 define('MODULES_PATH', BASE_PATH . '/modules');
@@ -33,14 +33,22 @@ spl_autoload_register(function (string $class): void {
     }
 });
 
-// اگر نصب نشده → نصاب خودکار
-if (!is_file(BASE_PATH . '/database/installed.lock') && is_file(BASE_PATH . '/install.php')) {
-    // به‌جز خود صفحه نصب
-    $reqUri = $_SERVER['REQUEST_URI'] ?? '';
-    if (!str_contains($reqUri, 'install.php')) {
-        header('Location: install.php');
-        exit;
-    }
+// اگر نصب نشده → پیام راهنما (نصب فقط با نصب‌کننده تک‌فایل)
+if (!is_file(BASE_PATH . '/database/installed.lock')) {
+    http_response_code(503);
+    ?>
+    <!DOCTYPE html>
+    <html dir="rtl" lang="fa">
+    <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>مودولاینر — نصب نشده</title>
+    <style>body{font-family:Tahoma,sans-serif;background:#1a1a2e;color:#eee;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:16px}.box{background:#16213e;border-radius:12px;padding:32px;max-width:480px;text-align:center}h1{color:#e8b923;font-size:20px;margin-bottom:12px}p{font-size:14px;color:#aaa;line-height:1.9}code{background:#0f0f1a;padding:2px 8px;border-radius:4px;color:#e8b923}</style>
+    </head>
+    <body><div class="box">
+        <h1>مودولاینر نصب نشده است</h1>
+        <p>فایل <code dir="ltr">moduliner-installer.php</code> را در همین پوشه آپلود کنید و در مرورگر اجراش کنید تا نصب انجام شود.</p>
+    </div></body></html>
+    <?php
+    exit;
 }
 
 // راه‌اندازی اپلیکیشن

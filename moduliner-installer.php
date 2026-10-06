@@ -14,7 +14,7 @@
 declare(strict_types=1);
 
 define('GITHUB_REPO', 'farsmd/moduliner');
-define('INSTALLER_VERSION', '0.0.3');
+define('INSTALLER_VERSION', '0.0.4');
 
 session_start();
 
@@ -281,14 +281,21 @@ code { background: #0f0f1a; padding: 2px 8px; border-radius: 4px; font-size: 13p
             </form>
         </div>
 
-    <?php elseif ($step === 'done'): ?>
+    <?php elseif ($step === 'done'):
+        // حذف خودکار نصب‌کننده بعد از نصب موفق
+        $selfDeleted = @unlink(__FILE__);
+    ?>
         <div class="card">
             <div class="msg-ok" style="text-align:center;">
-                <h2>نصب کامل شد! 🎉</h2>
+                <h2>نصب کامل شد!</h2>
                 <p style="margin-top:8px;">نسخه <?= htmlspecialchars($_SESSION['installed_version'] ?? '') ?> با موفقیت نصب شد.</p>
+                <?php if ($selfDeleted): ?>
+                    <p style="margin-top:8px;">فایل نصب‌کننده به‌صورت خودکار حذف شد.</p>
+                <?php else: ?>
+                    <p style="margin-top:8px;color:#ff8a8a;">فایل <code dir="ltr">moduliner-installer.php</code> را دستی از هاست پاک کنید.</p>
+                <?php endif; ?>
             </div>
-            <p style="margin:16px 0;font-size:14px;color:#ff8a8a;">⚠️ حالا فایل <code dir="ltr">moduliner-installer.php</code> را از هاست پاک کنید.</p>
-            <p style="text-align:center;"><a href="index.php" style="font-size:16px;">ورود به سیستم</a></p>
+            <p style="text-align:center;margin-top:16px;"><a href="index.php" style="font-size:16px;">ورود به سیستم</a></p>
         </div>
     <?php endif; ?>
 </div>
