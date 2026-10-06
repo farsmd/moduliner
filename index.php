@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-define('MODULINER_VERSION', '0.4.0');
+define('MODULINER_VERSION', '0.4.1');
 define('BASE_PATH', __DIR__);
 define('CORE_PATH', BASE_PATH . '/core');
 define('MODULES_PATH', BASE_PATH . '/modules');
