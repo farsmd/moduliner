@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # هدایت تمام درخواست‌ها به index.php (به‌جز فایل‌های واقعی)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# امنیت: عدم نمایش فهرست پوشه‌ها
+Options -Indexes
+
+# محافظت از دیتابیس
+<Files "*.sqlite">
+    Require all denied
+</Files>
