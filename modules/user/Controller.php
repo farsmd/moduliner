@@ -19,15 +19,6 @@ class Controller extends BaseController
         $this->users->ensureOwnerExists();
     }
 
-    /** صفحه اصلی — هدایت به لاگین، پنل مدیریت یا داشبورد */
-    public function home(): void
-    {
-        if ($this->currentUser() !== null) {
-            $this->redirect($this->landingPage());
-        } else {
-            $this->redirect('user/login');
-        }
-    }
 
     /** صفحه فرود بعد از لاگین: admin/owner → پنل مدیریت */
     private function landingPage(): string

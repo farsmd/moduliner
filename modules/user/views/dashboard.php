@@ -29,10 +29,10 @@ main { max-width: 800px; margin: 32px auto; padding: 0 16px; }
         <p style="margin-top:8px;"><span class="badge"><?= htmlspecialchars($user['role']) ?></span></p>
         <p class="meta">ورود موفق — هسته و ماژول کاربر سالم کار می‌کنند.</p>
     </div>
-    <?php if (($user['role'] ?? '') === 'owner'): ?>
+    <?php if (in_array($user['role'] ?? '', ['owner', 'admin'], true)): ?>
     <div class="card">
-        <h3>مدیریت سیستم</h3>
-        <p style="margin-top:8px;"><a href="update" style="color:#e8b923;">بررسی به‌روزرسانی</a></p>
+        <h3>پنل مدیریت</h3>
+        <p style="margin-top:8px;"><a href="admin" style="color:#e8b923;">ورود به داشبورد مدیریت</a></p>
     </div>
     <?php endif; ?>
     <div class="card">
