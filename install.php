@@ -3,8 +3,8 @@
  * Moduliner — نصب‌کننده تک‌فایل
  *
  * نحوه استفاده:
- * ۱. فقط همین یک فایل را در هاست خالی آپلود کنید
- * ۲. در مرورگر باز کنید: https://yoursite.com/moduliner-installer.php
+ * ۱. فقط همین یک فایل (install.php) را در هاست خالی آپلود کنید
+ * ۲. در مرورگر باز کنید: https://yoursite.com/install.php
  * ۳. مراحل را دنبال کنید — خودش آخرین نسخه را از گیت‌هاب می‌گیرد و نصب می‌کند
  * ۴. بعد از نصب، این فایل را پاک کنید
  *
@@ -14,12 +14,21 @@
 declare(strict_types=1);
 
 define('GITHUB_REPO', 'farsmd/moduliner');
-define('INSTALLER_VERSION', '0.0.4');
+define('INSTALLER_VERSION', '0.0.5');
 
 session_start();
 
-// گام‌ها: check → download → setup → done
+// گام فعلی (قبل از محافظ لازم است)
 $step = $_GET['step'] ?? 'check';
+
+// اگر قبلاً نصب شده → اجازه اجرای مجدد نده (به‌جز صفحه پایان که بعد از ساخت قفل نمایش داده می‌شود)
+if ($step !== 'done' && is_file(__DIR__ . '/database/installed.lock')) {
+    http_response_code(403);
+    echo '<!DOCTYPE html><html dir="rtl" lang="fa"><head><meta charset="utf-8"><title>نصب شده</title></head><body style="font-family:Tahoma;background:#1a1a2e;color:#eee;text-align:center;padding:64px;">سیستم قبلاً نصب شده است.<br>برای به‌روزرسانی از ماژول update داخل پنل استفاده کنید.</body></html>';
+    exit;
+}
+
+// گام‌ها: check → download → setup → done
 $errors = [];
 
 // ─── گام ۱: بررسی پیش‌نیازها ───
@@ -113,7 +122,7 @@ function downloadLatest(): array
     foreach ($iterator as $item) {
         $relPath = substr($item->getPathname(), strlen($srcDir) + 1);
         // خود نصب‌کننده را بازنویسی نکن
-        if ($relPath === 'moduliner-installer.php') { continue; }
+        if ($relPath === 'install.php') { continue; }
         // database/ را بازنویسی نکن اگر وجود دارد
         if (str_starts_with($relPath, 'database/') && is_file(__DIR__ . '/' . $relPath)) { continue; }
 
@@ -176,11 +185,14 @@ function setupAdmin(string $username, string $password, string $fullName): array
     }
 }
 
-// ─── پردازش ───
+// ─── پردازش (الگوی POST-Redirect-GET تا فرم‌ها به مرحله اشتباه پست نشوند) ───
 $result = null;
 if ($step === 'download' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $result = downloadLatest();
-    if ($result['ok']) { $step = 'setup'; }
+    if ($result['ok']) {
+        header('Location: ?step=setup');
+        exit;
+    }
 } elseif ($step === 'setup' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $pw = (string) ($_POST['password'] ?? '');
     $pw2 = (string) ($_POST['password2'] ?? '');
@@ -192,7 +204,10 @@ if ($step === 'download' && ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $pw,
             trim((string) ($_POST['full_name'] ?? ''))
         );
-        if ($result['ok']) { $step = 'done'; }
+        if ($result['ok']) {
+            header('Location: ?step=done');
+            exit;
+        }
     }
 }
 
@@ -268,7 +283,7 @@ code { background: #0f0f1a; padding: 2px 8px; border-radius: 4px; font-size: 13p
         <?php if ($result && !$result['ok']): ?><div class="msg-err"><?= htmlspecialchars($result['message']) ?></div><?php endif; ?>
         <div class="card">
             <h2>ساخت حساب مدیر</h2>
-            <form method="post">
+            <form method="post" action="?step=setup">
                 <label>نام و نام خانوادگی</label>
                 <input type="text" name="full_name" autocomplete="name">
                 <label>نام کاربری</label>
@@ -292,7 +307,7 @@ code { background: #0f0f1a; padding: 2px 8px; border-radius: 4px; font-size: 13p
                 <?php if ($selfDeleted): ?>
                     <p style="margin-top:8px;">فایل نصب‌کننده به‌صورت خودکار حذف شد.</p>
                 <?php else: ?>
-                    <p style="margin-top:8px;color:#ff8a8a;">فایل <code dir="ltr">moduliner-installer.php</code> را دستی از هاست پاک کنید.</p>
+                    <p style="margin-top:8px;color:#ff8a8a;">فایل <code dir="ltr">install.php</code> را دستی از هاست پاک کنید.</p>
                 <?php endif; ?>
             </div>
             <p style="text-align:center;margin-top:16px;"><a href="index.php" style="font-size:16px;">ورود به سیستم</a></p>

@@ -45,7 +45,7 @@ if (!is_file(BASE_PATH . '/database/installed.lock')) {
     </head>
     <body><div class="box">
         <h1>مودولاینر نصب نشده است</h1>
-        <p>فایل <code dir="ltr">moduliner-installer.php</code> را در همین پوشه آپلود کنید و در مرورگر اجراش کنید تا نصب انجام شود.</p>
+        <p>فایل <code dir="ltr">install.php</code> را در همین پوشه آپلود کنید و در مرورگر اجراش کنید تا نصب انجام شود.</p>
     </div></body></html>
     <?php
     exit;

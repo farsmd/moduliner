@@ -110,7 +110,8 @@ class UpdateModel extends Model
             }
 
             // کپی فایل‌ها (به‌جز محافظت‌شده‌ها)
-            $protected = ['database', 'config.php', '.git'];
+            // install.php نصب‌کننده تک‌فایل است و جزئی از سیستم نیست
+            $protected = ['database', 'config.php', '.git', 'install.php'];
             $copied = $this->copyRecursive($srcDir, BASE_PATH, $protected);
 
             $result = ['ok' => true, 'message' => "آپدیت انجام شد. {$copied} فایل به‌روز شد. بکاپ: " . basename($backupFile)];
