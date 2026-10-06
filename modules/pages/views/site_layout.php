@@ -2,7 +2,11 @@
 /**
  * لی‌آوت عمومی سایت
  * متغیرها: $pageTitle, $content, $pages (صفحات منتشرشده برای ناوبری)
+ * عنوان سایت و متن فوتر از ماژول settings خوانده می‌شود (اگر نصب باشد)
  */
+$__settingsClass = 'Modules\\settings\\Models\\SettingModel';
+$siteTitle = class_exists($__settingsClass) ? $__settingsClass::get('site_title', 'وب‌سایت') : 'وب‌سایت';
+$footerText = class_exists($__settingsClass) ? $__settingsClass::get('footer_text', 'ساخته شده با مودولاینر') : 'ساخته شده با مودولاینر';
 ?>
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
@@ -10,7 +14,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <base href="<?= htmlspecialchars(BASE_URL . '/') ?>">
-<title><?= htmlspecialchars($pageTitle) ?></title>
+<title><?= htmlspecialchars($pageTitle) ?> | <?= htmlspecialchars($siteTitle) ?></title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: Tahoma, sans-serif; background: #fafafa; color: #333; line-height: 2; }
@@ -36,7 +40,7 @@ footer a { color: #888; }
 <body>
 <header>
     <div class="navbar">
-        <a class="brand" href="">خانه</a>
+        <a class="brand" href=""><?= htmlspecialchars($siteTitle) ?></a>
         <nav class="links">
             <?php foreach ($pages as $p): ?>
                 <?php if (!empty($p['is_home'])) continue; ?>
@@ -48,6 +52,6 @@ footer a { color: #888; }
 <main>
     <?= $content ?>
 </main>
-<footer>ساخته شده با مودولاینر</footer>
+<footer><?= htmlspecialchars($footerText) ?></footer>
 </body>
 </html>
