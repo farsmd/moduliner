@@ -10,7 +10,7 @@ ob_start();
 </div>
 
 <div class="card">
-    <h3 style="margin-bottom:12px;font-size:16px;">ماژول‌های فعال</h3>
+    <h3 style="margin-bottom:12px;font-size:16px;">آیتم‌های منوی ماژولار</h3>
     <table>
         <tr><th>ماژول</th><th>عنوان منو</th><th>دسترسی</th></tr>
         <?php foreach ($menu as $item): ?>
