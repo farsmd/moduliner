@@ -28,6 +28,12 @@ main { max-width: 800px; margin: 32px auto; padding: 0 16px; }
         <p style="margin-top:8px;"><span class="badge"><?= htmlspecialchars($user['role']) ?></span></p>
         <p class="meta">ورود موفق — هسته و ماژول کاربر سالم کار می‌کنند.</p>
     </div>
+    <?php if (($user['role'] ?? '') === 'owner'): ?>
+    <div class="card">
+        <h3>مدیریت سیستم</h3>
+        <p style="margin-top:8px;"><a href="update" style="color:#e8b923;">بررسی به‌روزرسانی</a></p>
+    </div>
+    <?php endif; ?>
     <div class="card">
         <h3>ماژول‌های بعدی</h3>
         <p class="meta">ساختار آماده است — ماژول جدید را در <code dir="ltr">modules/</code> بساز و فایل <code dir="ltr">routes.php</code> را اضافه کن.</p>

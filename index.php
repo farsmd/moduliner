@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-define('MODULINER_VERSION', '0.0.1');
+define('MODULINER_VERSION', '0.0.2');
 define('BASE_PATH', __DIR__);
 define('CORE_PATH', BASE_PATH . '/core');
 define('MODULES_PATH', BASE_PATH . '/modules');
@@ -32,6 +32,16 @@ spl_autoload_register(function (string $class): void {
         if (is_file($file)) { require_once $file; return; }
     }
 });
+
+// اگر نصب نشده → نصاب خودکار
+if (!is_file(BASE_PATH . '/database/installed.lock') && is_file(BASE_PATH . '/install.php')) {
+    // به‌جز خود صفحه نصب
+    $reqUri = $_SERVER['REQUEST_URI'] ?? '';
+    if (!str_contains($reqUri, 'install.php')) {
+        header('Location: install.php');
+        exit;
+    }
+}
 
 // راه‌اندازی اپلیکیشن
 require_once CORE_PATH . '/App.php';
