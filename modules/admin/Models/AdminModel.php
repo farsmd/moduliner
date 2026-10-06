@@ -18,34 +18,14 @@ class AdminModel extends Model
     }
 
     /**
-     * منوی همه ماژول‌ها، فیلترشده بر اساس نقش کاربر
+     * منوی سایدبار — از دیتابیس (ماژول menu)، فیلترشده بر اساس نقش
+     * اگر جدول خالی باشد، خودکار از menu.php ماژول‌ها ایمپورت می‌شود
      * @return array<int, array{module:string,title:string,url:string,icon:string,roles:array}>
      */
     public function menuItems(string $userRole): array
     {
-        $items = [];
-        if (!is_dir(MODULES_PATH)) { return $items; }
-        foreach (scandir(MODULES_PATH) as $module) {
-            if ($module === '.' || $module === '..') { continue; }
-            $menuFile = MODULES_PATH . "/{$module}/menu.php";
-            if (!is_file($menuFile)) { continue; }
-            $entries = require $menuFile;
-            if (!is_array($entries)) { continue; }
-            foreach ($entries as $e) {
-                if (!is_array($e) || empty($e['title']) || empty($e['url'])) { continue; }
-                $roles = $e['roles'] ?? ['owner', 'admin'];
-                // owner همه‌چیز را می‌بیند
-                if ($userRole !== 'owner' && !in_array($userRole, (array) $roles, true)) { continue; }
-                $items[] = [
-                    'module' => $module,
-                    'title' => (string) $e['title'],
-                    'url' => (string) $e['url'],
-                    'icon' => (string) ($e['icon'] ?? ''),
-                    'roles' => (array) $roles,
-                ];
-            }
-        }
-        return $items;
+        $menu = new \Modules\menu\Models\MenuModel();
+        return $menu->forRole($userRole);
     }
 
     /** تعداد ماژول‌های نصب‌شده */
