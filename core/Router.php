@@ -32,6 +32,11 @@ class Router
     {
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
         $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+        // اگر مستقیماً index.php درخواست شد (مثلاً لینک «ورود به سیستم»)، مثل روت رفتار کن
+        if (str_ends_with($uri, '/index.php')) {
+            $uri = substr($uri, 0, -strlen('/index.php'));
+            if ($uri === '' || $uri === false) { $uri = '/'; }
+        }
         // حذف base path اگر پروژه در ساب‌فولدر است
         $scriptDir = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? ''), '/');
         if ($scriptDir !== '' && str_starts_with($uri, $scriptDir)) {
