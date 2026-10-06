@@ -41,6 +41,8 @@ class Controller extends BaseController
             $this->redirect($this->landingPage());
         }
         $error = null;
+        $notice = $_SESSION['login_notice'] ?? null;
+        unset($_SESSION['login_notice']);
         if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $username = trim((string) ($_POST['username'] ?? ''));
             $password = (string) ($_POST['password'] ?? '');
@@ -52,7 +54,7 @@ class Controller extends BaseController
             }
             $error = 'نام کاربری یا رمز عبور اشتباه است.';
         }
-        $this->view('user', 'login', ['error' => $error]);
+        $this->view('user', 'login', ['error' => $error, 'notice' => $notice]);
     }
 
     public function logout(): void

@@ -129,10 +129,15 @@ class UpdateModel extends Model
     {
         $zip = new \ZipArchive();
         $zip->open($backupFile, \ZipArchive::CREATE);
-        // فقط فایل‌های حیاتی: دیتابیس
-        $dbFile = BASE_PATH . '/database/app.sqlite';
+        // فقط فایل‌های حیاتی: دیتابیس فعال
+        $dbFile = \Core\Database::path();
         if (is_file($dbFile)) {
-            $zip->addFile($dbFile, 'database/app.sqlite');
+            $zip->addFile($dbFile, 'database/' . basename($dbFile));
+        }
+        // اشاره‌گر دیتابیس فعال هم حفظ شود
+        $activePtr = BASE_PATH . '/database/active.txt';
+        if (is_file($activePtr)) {
+            $zip->addFile($activePtr, 'database/active.txt');
         }
         $zip->close();
     }

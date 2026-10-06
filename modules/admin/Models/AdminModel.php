@@ -63,7 +63,7 @@ class AdminModel extends Model
     /** حجم فایل دیتابیس */
     public function databaseSize(): string
     {
-        $file = BASE_PATH . '/database/app.sqlite';
+        $file = \Core\Database::path();
         if (!is_file($file)) { return '—'; }
         $bytes = filesize($file);
         if ($bytes < 1024) { return $bytes . ' B'; }

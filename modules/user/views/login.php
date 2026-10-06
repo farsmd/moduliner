@@ -18,6 +18,7 @@ button { width: 100%; padding: 12px; border: none; border-radius: 8px; backgroun
 button:hover { background: #f5c842; }
 .error { background: #4a1515; color: #ff8a8a; padding: 10px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; }
 .hint { margin-top: 16px; font-size: 12px; color: #666; text-align: center; }
+.notice { background: #1b3a5c; color: #9ecfff; padding: 10px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -26,6 +27,9 @@ button:hover { background: #f5c842; }
     <p class="sub">ورود به سیستم</p>
     <?php if (!empty($error)): ?>
         <div class="error"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+    <?php if (!empty($notice)): ?>
+        <div class="notice"><?= htmlspecialchars($notice) ?></div>
     <?php endif; ?>
     <form method="post">
         <label>نام کاربری</label>
