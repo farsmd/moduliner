@@ -65,6 +65,24 @@ class UserModel extends Model
         return (int) ($row['c'] ?? 0);
     }
 
+    /** لیست همه کاربران — برای پنل مدیریت */
+    public function all(): array
+    {
+        return $this->fetchAll('SELECT id, username, full_name, role, is_active, created_at FROM users ORDER BY id ASC');
+    }
+
+    /** تغییر نقش کاربر */
+    public function updateRole(int $id, string $role): void
+    {
+        $this->query('UPDATE users SET role = :r WHERE id = :i', [':r' => $role, ':i' => $id]);
+    }
+
+    /** فعال / غیرفعال کردن کاربر */
+    public function setActive(int $id, bool $active): void
+    {
+        $this->query('UPDATE users SET is_active = :a WHERE id = :i', [':a' => $active ? 1 : 0, ':i' => $id]);
+    }
+
     /** اولین کاربر به‌صورت خودکار owner می‌شود */
     public function ensureOwnerExists(): void
     {

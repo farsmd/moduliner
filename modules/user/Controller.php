@@ -19,20 +19,26 @@ class Controller extends BaseController
         $this->users->ensureOwnerExists();
     }
 
-    /** صفحه اصلی — هدایت به لاگین یا داشبورد */
+    /** صفحه اصلی — هدایت به لاگین، پنل مدیریت یا داشبورد */
     public function home(): void
     {
         if ($this->currentUser() !== null) {
-            $this->redirect('user/dashboard');
+            $this->redirect($this->landingPage());
         } else {
             $this->redirect('user/login');
         }
     }
 
+    /** صفحه فرود بعد از لاگین: admin/owner → پنل مدیریت */
+    private function landingPage(): string
+    {
+        return self::hasRole('admin') ? 'admin' : 'user/dashboard';
+    }
+
     public function login(): void
     {
         if ($this->currentUser() !== null) {
-            $this->redirect('user/dashboard');
+            $this->redirect($this->landingPage());
         }
         $error = null;
         if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
@@ -42,7 +48,7 @@ class Controller extends BaseController
             if ($user !== null && $this->users->verifyPassword($user, $password)) {
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = (int) $user['id'];
-                $this->redirect('user/dashboard');
+                $this->redirect($this->landingPage());
             }
             $error = 'نام کاربری یا رمز عبور اشتباه است.';
         }

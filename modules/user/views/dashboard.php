@@ -2,6 +2,7 @@
 <html dir="rtl" lang="fa">
 <head>
 <meta charset="utf-8">
+<base href="<?= htmlspecialchars(BASE_URL . '/') ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>داشبورد — مودولاینر</title>
 <style>

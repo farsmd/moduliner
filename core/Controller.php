@@ -25,6 +25,10 @@ abstract class Controller
 
     protected function redirect(string $url): void
     {
+        // آدرس نسبی → مطلق با مسیر پایه (کار در ساب‌فولدر هم درست است)
+        if (!str_starts_with($url, '/') && !preg_match('#^https?://#i', $url)) {
+            $url = BASE_URL . '/' . ltrim($url, '/');
+        }
         header('Location: ' . $url);
         exit;
     }
